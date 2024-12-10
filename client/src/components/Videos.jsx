@@ -10,13 +10,37 @@ export default function Videos({ videos }) {
     const [showIcon, setShowIcon] = useState(null);
     const videoRef = useRef(null);
 
-    const handleScroll = (e) => {
-        if (e.deltaY > 0) {
+    // Touch tracking
+    const touchStartY = useRef(0);
+    const touchEndY = useRef(0);
+
+    const handleScroll = (deltaY) => {
+        if (deltaY > 0) {
             setCurrentVideoIndex((prev) =>
                 prev < videos.length - 1 ? prev + 1 : prev
             );
         } else {
             setCurrentVideoIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        }
+    };
+
+    const handleWheel = (e) => {
+        handleScroll(e.deltaY);
+    };
+
+    const handleTouchStart = (e) => {
+        touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
+        const deltaY = touchStartY.current - touchEndY.current;
+        if (Math.abs(deltaY) > 50) {
+            // Threshold to avoid accidental scrolls
+            handleScroll(deltaY);
         }
     };
 
@@ -66,7 +90,10 @@ export default function Videos({ videos }) {
     return (
         <div
             className="flex items-start lg:items-center justify-center min-h-screen"
-            onWheel={handleScroll}
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
         >
             <div className="relative w-full max-w-md aspect-video h-[95vh] bg-gray-800 rounded-lg overflow-hidden">
                 <video
