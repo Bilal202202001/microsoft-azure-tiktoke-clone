@@ -124,7 +124,7 @@ export default function AuthForm() {
         <div className=' h-screen w-full flex lg:flex-row flex-col'>
             <div className=' h-40 lg:h-full w-full lg:w-2/6  flex justify-center items-center'>
                 <img src="/logo1.png" alt="JIRA Logo" className="h-16 w-16 mr-2" />
-                <a href='/' className="text-2xl font-semibold text-gray-800">Tiktok</a>
+                <a href='/' className="text-2xl font-semibold text-gray-800">VidVibe</a>
             </div>
 
             <div className='w-full lg:w-4/6 h-auto lg:h-full flex flex-col justify-center items-center'>

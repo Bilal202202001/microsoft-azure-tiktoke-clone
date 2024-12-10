@@ -1,1 +1,1 @@
-# microsoft-azure-tiktoke-clone
+# microsoft-azure-VidVibee-clone

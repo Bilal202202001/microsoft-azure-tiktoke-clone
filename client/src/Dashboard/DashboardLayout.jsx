@@ -39,7 +39,7 @@ export default function DashboardLayout() {
                 <div className={`w-1/5 p-5 min-h-[90vh] bg-transparent text-gray-800 hidden lg:flex flex-col space-y-6 relative h-screen`}>
                     <div className="flex w-full justify-start items-center">
                         <img src="/logo1.png" alt="JIRA Logo" className="h-16 w-16 mr-2" />
-                        <h2 className="text-2xl font-semibold text-gray-800">TikTok</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800">VidVibe</h2>
                     </div>
                     <div className='flex items-center justify-center'>
                         <input type="text" placeholder='Search' className='w-full py-2 px-4 mx-2 border border-gray-300 rounded-lg' />
@@ -69,7 +69,7 @@ export default function DashboardLayout() {
                             Terms & Policies
                         </a>
                         <h2 className='cursor-pointer'>
-                            © 2024 TikTok
+                            © 2024 VidVibe
                         </h2>
                     </div>
                 </div>
