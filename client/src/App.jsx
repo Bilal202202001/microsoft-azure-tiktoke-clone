@@ -7,9 +7,10 @@ import JiraCredentials from './Dashboard/Credentials/JiraCredentials';
 import DashboardLayout from './Dashboard/DashboardLayout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dashboard from './Dashboard/Dashboard';
+import Dashboard from './Dashboard/ForYou';
 import Users from './Dashboard/Users/Users';
 import Projects from './Dashboard/Projects/Projects';
+import Foryou from './Dashboard/ForYou';
 
 export default function App() {
   return (
@@ -17,7 +18,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<AuthForm />} />
         <Route path="/" element={<DashboardLayout />}>
-          <Route path="foryou" element={<Dashboard />} />
+          <Route path="" element={<Foryou />} />
           <Route path="credentials" element={<JiraCredentials />} />
           <Route path="haab" element={<JqlConverter />} />
           <Route path="users" element={<Users />} />
