@@ -129,10 +129,10 @@ export default function AuthForm() {
 
             <div className='w-full lg:w-4/6 h-auto lg:h-full flex flex-col justify-center items-center'>
 
-                <h2 className='text-5xl font-bold my-2 text-rose-600'>
+                <h2 className='text-5xl font-bold my-2 text-black'>
                     {inputType === "registerFormFiels" ? "Welcome" : "Welcome Back"}
                 </h2>
-                <h2 className='text-xl bg-red-600 px-3 rounded font-bol text-white font-bold'>
+                <h2 className='text-xl bg-black px-3 rounded font-bol text-white font-bold'>
                     {inputType === "registerFormFiels" ? "REGISTER" : "LOGIN"}
                 </h2>
                 <form className='flex flex-col justify-center items-center w-4/5 lg:w-2/5 my-5 h-[50vh]' onSubmit={handleSubmit}>

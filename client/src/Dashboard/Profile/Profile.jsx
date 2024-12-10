@@ -7,6 +7,9 @@ const Profile = () => {
         email: "johndoe@example.com",
         bio: "Avid traveler and content creator.",
         isPrivate: false,
+        following: 120,
+        followers: 450,
+        likes: 1024,
     });
 
     const [uploadedVideos, setUploadedVideos] = useState([
@@ -18,7 +21,7 @@ const Profile = () => {
     ]);
 
     return (
-        <div className="p-8 min-h-[90vh] bg-white">
+        <div className="p-2 lg:p-8 min-h-[90vh] bg-white">
             {/* Profile Section */}
             <div className="flex flex-col items-center mb-8">
                 <div className="relative">
@@ -47,26 +50,46 @@ const Profile = () => {
                         />
                     </label>
                 </div>
-                {/* Username */}
+
                 <h1 className="text-xl font-bold text-gray-800 mt-4">
                     {profileData.username}
                 </h1>
                 {/* Email */}
                 <p className="text-gray-600">{profileData.email}</p>
                 {/* Bio */}
-                <p className="mt-4 w-3/4 text-center text-gray-700">{profileData.bio}</p>
+
+                {/* Stats */}
+                <div className="flex items-center justify-center space-x-4 mt-4">
+                    <div className="text-center rounded-lg border border-gray-100 px-2 py-1 ">
+                        <h2 className="text-xl font-semibold text-gray-800">{profileData.following}</h2>
+                        <p className="text-sm text-gray-500">Following</p>
+                    </div>
+                    <div className="text-center rounded-lg border border-gray-100 px-2 py-1">
+                        <h2 className="text-xl font-semibold text-gray-800">{profileData.followers}</h2>
+                        <p className="text-sm text-gray-500">Followers</p>
+                    </div>
+                    <div className="text-center rounded-lg border border-gray-100 px-2 py-1">
+                        <h2 className="text-xl font-semibold text-gray-800">{profileData.likes}</h2>
+                        <p className="text-sm text-gray-500">Likes</p>
+                    </div>
+                </div>
+
+                <p className="mt-4 w-2/4 text-center text-gray-700">{profileData.bio}</p>
+                {/* Edit Profile Button */}
+                <button className="mt-4 bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-rose-700 transition">
+                    Edit Profile
+                </button>
             </div>
 
             {/* Uploaded Videos Section */}
             <div>
-                <h2 className="text-2xl font-semibold mb-4 text-center w-full bg-rose-600 text-white">Your Videos</h2>
+                <h2 className="text-xl shadow-sm py-1 shadow-gray-200 font-semibold mb-4 text-center w-full">
+                    Videos
+                </h2>
                 {uploadedVideos.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-2">
                         {uploadedVideos.map((video) => (
-                            <div
-                                key={video.id}
-                                className=""
-                            >
+                            <div key={video.id} className="">
                                 <video
                                     src={video.src}
                                     controls

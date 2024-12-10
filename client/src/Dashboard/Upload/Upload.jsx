@@ -35,92 +35,84 @@ const Upload = () => {
     };
 
     return (
-        <div className="p-8 min-h-[90vh] bg-white flex">
+        <div className="p-4 mb-20 lg:p-8 min-h-[90vh] bg-white flex flex-col">
+            <h1 className="text-3xl font-bold text-gray-800 mb-4 w-full text-center lg:text-start shadow-sm shadow-b-gray-300 py-2 mb-4">Upload Video</h1>
             {/* Form Section */}
-            <div className="w-1/2">
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">Upload Video</h1>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Video Upload */}
-                    <div>
-                        <label className="block font-semibold text-gray-700 mb-2">Upload Video (MP4)</label>
-                        <input
-                            type="file"
-                            accept="video/mp4"
-                            onChange={handleVideoChange}
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+            <div className='w-full h-full lg:h-[70vh] flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-x-4 ' >
+                <div className="w-full lg:w-1/2  flex items-center justify-center">
+                    {videoPreview ? (
+                        <video
+                            src={videoPreview}
+                            controls
+                            className="max-w-full lg:h-full h-80 lg:max-h-[70vh] rounded-lg shadow-lg"
                         />
-                    </div>
-                    {/* Title */}
-                    <div>
-                        <label className="block font-semibold text-gray-700 mb-2">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            placeholder="Enter Title"
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
-                            required
-                        />
-                    </div>
-                    {/* Location */}
-                    <div>
-                        <label className="block font-semibold text-gray-700 mb-2">Location</label>
-                        <input
-                            type="text"
-                            name="location"
-                            value={formData.location}
-                            onChange={handleInputChange}
-                            placeholder="Enter Location"
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
-                            required
-                        />
-                    </div>
-                    {/* Hashtags */}
-                    <div>
-                        <label className="block font-semibold text-gray-700 mb-2">Hashtags</label>
-                        <input
-                            type="text"
-                            name="hashtags"
-                            value={formData.hashtags}
-                            onChange={handleInputChange}
-                            placeholder="#hashtag1 #hashtag2"
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
-                        />
-                    </div>
-                    {/* Topics */}
-                    <div>
-                        <label className="block font-semibold text-gray-700 mb-2">Topics</label>
-                        <input
-                            type="text"
-                            name="topics"
-                            value={formData.topics}
-                            onChange={handleInputChange}
-                            placeholder="Enter Topics"
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
-                        />
-                    </div>
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-500 transition"
-                    >
-                        Upload
-                    </button>
-                </form>
+                    ) : (
+                        <p className="text-gray-500 text-lg">No video selected</p>
+                    )}
+                </div>
+                <div className="w-full lg:w-1/2">
+                    <form onSubmit={handleSubmit} className="space-y-4 flex flex-col items-center justify-center">
+
+                        <div className='w-full'>
+                            <label className="block font-semibold text-gray-700 mb-2">Upload Video (MP4)</label>
+                            <input
+                                type="file"
+                                accept="video/mp4"
+                                onChange={handleVideoChange}
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            />
+                        </div>
+
+                        <div className='w-full'> 
+                            <label className="block font-semibold text-gray-700 mb-2">Title</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                                placeholder="Enter Title"
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div >
+
+                        <div className='w-full'>
+                            <label className="block font-semibold text-gray-700 mb-2">Location</label>
+                            <input
+                                type="text"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleInputChange}
+                                placeholder="Enter Location"
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div>
+
+                        <div className='w-full'>
+                            <label className="block font-semibold text-gray-700 mb-2">Hashtags</label>
+                            <input
+                                type="text"
+                                name="hashtags"
+                                value={formData.hashtags}
+                                onChange={handleInputChange}
+                                placeholder="#hashtag1 #hashtag2"
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            />
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            className="bg-red-600 text-white py-2 w-full rounded-lg font-semibold hover:bg-red-500 transition"
+                        >
+                            Upload
+                        </button>
+                    </form>
+                </div>
             </div>
             {/* Video Preview Section */}
-            <div className="w-1/2 flex items-center justify-center">
-                {videoPreview ? (
-                    <video
-                        src={videoPreview}
-                        controls
-                        className="max-w-full rounded-lg shadow-lg"
-                    />
-                ) : (
-                    <p className="text-gray-500 text-lg">No video selected</p>
-                )}
-            </div>
+
         </div>
     );
 };
