@@ -1,7 +1,7 @@
-import React from "react";
-import Videos from "../components/Videos";
+import React, { useEffect, useState } from 'react';
+import Videos from '../../components/Videos';
 
-function Foryou() {
+const Following = () => {
     const videos = [
         {
             src: "/video0.mp4",
@@ -39,9 +39,10 @@ function Foryou() {
             hashtags: "#greece #santorini #travel",
         },
     ];
+
     return (
         <Videos videos={videos} />
     );
-}
+};
 
-export default Foryou;
+export default Following;

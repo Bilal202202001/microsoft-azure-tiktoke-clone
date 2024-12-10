@@ -1,16 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import JqlConverter from './Dashboard/QueryConverter/JqlConverter';
 import AuthForm from './auth/AuthForm';
-import JiraCredentials from './Dashboard/Credentials/JiraCredentials';
 import DashboardLayout from './Dashboard/DashboardLayout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dashboard from './Dashboard/ForYou';
-import Users from './Dashboard/Users/Users';
-import Projects from './Dashboard/Projects/Projects';
 import Foryou from './Dashboard/ForYou';
+import Upload from './Dashboard/Upload/Upload';
+import Following from './Dashboard/Following/Following';
+import Profile from './Dashboard/Profile/Profile';
 
 export default function App() {
   return (
@@ -19,10 +17,12 @@ export default function App() {
         <Route path="/login" element={<AuthForm />} />
         <Route path="/" element={<DashboardLayout />}>
           <Route path="" element={<Foryou />} />
-          <Route path="credentials" element={<JiraCredentials />} />
-          <Route path="haab" element={<JqlConverter />} />
+          <Route path="following" element={<Following />} />
+          <Route path="upload" element={<Upload />} />
+          <Route path="profile" element={<Profile />} />
+          {/* <Route path="credentials" element={<JiraCredentials />} />
           <Route path="users" element={<Users />} />
-          <Route path="projects" element={<Projects />} />
+          <Route path="projects" element={<Projects />} /> */}
         </Route>
       </Routes>
 

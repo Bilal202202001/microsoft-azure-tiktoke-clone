@@ -41,8 +41,8 @@ export default function DashboardLayout() {
                         <img src="/logo1.png" alt="JIRA Logo" className="h-16 w-16 mr-2" />
                         <h2 className="text-2xl font-semibold text-gray-800">VidVibe</h2>
                     </div>
-                    <div className='flex items-center justify-center'>
-                        <input type="text" placeholder='Search' className='w-full py-2 px-4 mx-2 border border-gray-300 rounded-lg' />
+                    <div className='flex items-center justify-center w-full'>
+                        <input type="text" placeholder='Search' className='w-full py-2 px-4 mr-2 border border-gray-300 rounded-lg' />
                         <button className='bg-rose-600 text-white py-2 px-4 rounded font-semibold' >
                             Search
                         </button>
@@ -77,11 +77,11 @@ export default function DashboardLayout() {
                     <Outlet />
                 </div>
                 {/* Mobile Bottom Navbar */}
-                <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-950 shadow-lg border-t border-gray-300 flex justify-around items-center py-3">
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-950 shadow-lg border-t border-gray-300 flex justify-around items-center py-2">
                     {[
-                        { href: '/', icon: <RiHome2Fill size="24" />, label: 'Home' },
-                        { href: '/upload', icon: <BsPlusSquareDotted size="40" />, label: 'Upload' },
-                        { href: '/profile', icon: <FaUser size="24" />, label: 'Profile' },
+                        { href: '/', icon: <RiHome2Fill size="24" />, label: '' },
+                        { href: '/upload', icon: <BsPlusSquareDotted size="40" />, label: '' },
+                        { href: '/profile', icon: <FaUser size="24" />, label: '' },
                     ].map((link) => (
                         <a
                             key={link.href}
