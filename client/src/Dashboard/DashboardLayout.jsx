@@ -46,22 +46,12 @@ export default function DashboardLayout() {
         { href: '/profile', icon: <FaUser size="24" />, label: 'Profile' },
     ];
 
-
-    const contentCreatorMobile = [
+    const contentViewer = [
         { href: '/', icon: <RiHome2Fill size="24" />, label: 'Videos' },
-        { href: '/foryou', icon: <BsCameraVideoFill size="24" />, label: 'Foryou' },
-        { href: '/upload', icon: <FaSquarePlus size="40" />, label: '' },
-        { href: '/profile', icon: <FaUser size="24" />, label: 'Profile' },
-        { href: '/auth', icon: <RiLoginBoxFill size="24" />, label: 'Login' },
-    ];
-
-
-    const nativeUser = [
-        { href: '/', icon: <RiHome2Fill size="24" />, label: 'Videos' },
-        { href: '/foryou', icon: <BsCameraVideoFill size="24" />, label: 'Foryou' },
-        { href: '/following', icon: <RiUserFollowFill size="24" />, label: 'Following' },
         { href: '/profile', icon: <FaUser size="24" />, label: 'Profile' },
     ];
+
+    const navLink = auth.role === 'creator' ? contentCreator : contentViewer;
 
     return (
         <div className="flex flex-col ">
@@ -71,17 +61,10 @@ export default function DashboardLayout() {
                         <img src="/logo1.png" alt="JIRA Logo" className="h-16 w-16 mr-2" />
                         <h2 className="text-2xl font-semibold text-gray-800">VidVibe</h2>
                     </div>
-                    {/* <div className='flex items-center justify-center w-full'>
-                        <input type="text" placeholder='Search' className='w-full py-2 px-4 mr-2 border border-gray-300 rounded-lg' />
-                        <button className='bg-rose-600 text-white py-2 px-4 rounded font-semibold' >
-                            Search
-                        </button>
-                    </div> */}
-
                     <>
                         <h2 className="text-xl font-bold  mb-4">Menu</h2>
                         <div className="space-y-4">
-                            {contentCreator.map((link) => (
+                            {navLink.map((link) => (
                                 <a key={link.href} href={link.href} className={`flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 transition ${isActive(link.href) ? 'text-rose-600' : 'text-gray-900'}`}>
                                     {link.icon}
                                     <span className="text-sm font-medium ">{link.label}</span>
@@ -121,7 +104,7 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-black shadow-lg flex justify-around items-center py-2">
-                    {contentCreatorMobile.map((link) => (
+                    {navLink.map((link) => (
                         <a
                             key={link.href}
                             href={link.href}

@@ -4,6 +4,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { BsSendFill } from "react-icons/bs";
 import { FaCircleUser } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { toast } from 'react-toastify';
 import axios from "axios";
 axios.defaults.withCredentials = true;
 export default function Videos({ videos, refetch }) {
@@ -95,7 +96,6 @@ export default function Videos({ videos, refetch }) {
         setIsModalOpen(false);
     };
 
-
     const handleAddComment = async () => {
         if (newComment.trim() !== "") {
             try {
@@ -109,7 +109,9 @@ export default function Videos({ videos, refetch }) {
                 console.log(res);
                 refetch();
             } catch (error) {
-                console.log(error);
+                toast.error(error.response.data.message, {
+                    style: { backgroundColor: '#e11d48', color: 'white' },
+                });
             }
             setNewComment("");
         }
@@ -126,7 +128,9 @@ export default function Videos({ videos, refetch }) {
             console.log(res);
             refetch();
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.message, {
+                style: { backgroundColor: '#e11d48', color: 'white' },
+            });
         }
     };
 
@@ -161,13 +165,13 @@ export default function Videos({ videos, refetch }) {
 
     return (
         <div
-            className="flex items-start lg:items-center justify-center min-h-screen"
+            className="flex items-center lg:items-center justify-center h-full lg:min-h-screen"
             onWheel={handleWheel}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
         >
-            <div className="relative w-full max-w-md aspect-video h-[95vh] bg-gray-800 rounded-lg overflow-hidden">
+            <div className="relative w-full max-w-md aspect-video h-[100vh] lg:h-[95vh] bg-gray-800 rounded-lg overflow-hidden">
                 <video
                     ref={videoRef}
                     src={currentVideo.url}

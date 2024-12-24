@@ -22,7 +22,7 @@ function Foryou() {
 
     return (
         <>
-            <div className="flex justify-center items-center w-full lg:h-screen relative">
+            <div className="flex justify-center items-center w-full lg:h-screen h-screen relative">
 
                 {videos.length > 0 ? <Videos videos={videos} refetch={getData} /> : <h1 className="text-2xl font-bold">No Videos Found</h1>}
 

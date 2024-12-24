@@ -10,9 +10,7 @@ import { log, timeStamp } from 'console';
 dotenv.config();
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' }); // Storing files temporarily in 'uploads' directory
-
-// Azure Storage configuration
+const upload = multer({ dest: 'uploads/' });
 const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
 const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
 const containerName = process.env.CONTAINER_NAME;
@@ -131,7 +129,7 @@ router.post('/addComment', async (req, res) => {
     try {
         const token = req.cookies.token;
         if (!token) {
-            return res.status(401).json({ message: "Invalid Login" });
+            return res.status(401).json({ message: "To comment on video,Please Login !" });
         }
         const user = jwt.verify(token, process.env.JWT_SECRET);
         if (!user) {
@@ -155,7 +153,7 @@ router.post('/likeVideo', async (req, res) => {
     try {
         const token = req.cookies.token;
         if (!token) {
-            return res.status(401).json({ message: "Invalid Login" });
+            return res.status(401).json({ message: "To like the video,Please Login" });
         }
         const user = jwt.verify(token, process.env.JWT_SECRET);
         const userData = await userModel.findById(user.id);
