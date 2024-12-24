@@ -4,6 +4,7 @@ import { FaSquarePlus } from "react-icons/fa6";
 import { RiHome2Fill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
+import { IoLogIn } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthData } from '../store/slices/auth';
 import { useNavigate } from 'react-router-dom';
@@ -103,16 +104,38 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-black shadow-lg flex justify-around items-center py-2">
-                    {navLink.map((link) => (
-                        <a
-                            key={link.href}
-                            href={link.href}
-                            className={`flex flex-col items-center text-xs ${pathname === link.href ? 'text-white' : 'text-gray-600'}`}
-                        >
-                            {link.icon}
-                            <span>{link.label}</span>
-                        </a>
-                    ))}
+                    <div className='w-2/3 flex justify-evenly'>
+                        {navLink.map((link) => (
+                            <a
+                                key={link.href}
+                                href={link.href}
+                                className={`flex flex-col items-center text-xs ${pathname === link.href ? 'text-white' : 'text-gray-600'}`}
+                            >
+                                {link.icon}
+                                <span>{link.label}</span>
+                            </a>
+                        ))}
+                    </div>
+
+                    <div className='w-1/3 flex justify-end items-center space-x-2 px-2'>
+                        {
+                            auth.isLogin ?
+                                <>
+
+                                    <h2 className="text-sm text-white font-bold  "> {auth.name}</h2>
+                                    <IoLogOut size="40" className='text-gray-500 cursor-pointer hover:text-rose-600' onClick={() => {
+                                        handleLogout();
+                                    }} />
+
+                                </> :
+                                <>
+                                    <a href="/auth" className=" text-white flex items-center space-x-2 text-center hover:bg-rose-500 rounded-lg font-semibold">
+                                        Login
+                                        <IoLogIn size={"40"} className='text-gray-500 cursor-pointer' />
+                                    </a>
+                                </>
+                        }
+                    </div>
                 </div>
 
             </div>

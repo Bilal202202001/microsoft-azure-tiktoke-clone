@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-axios.defaults.withCredentials = true;
-const Profile = () => {
 
+axios.defaults.withCredentials = true;
+
+const Profile = () => {
     const auth = useSelector((state) => state.auth);
 
     const [videos, setVideos] = useState([]);
     const [likedVideos, setLikedVideos] = useState([]);
-    const getData = async (search = '') => {
-        axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/video/getMyVideos`)
-            .then(res => {
-                setVideos(res.data.videos);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    const [activeTab, setActiveTab] = useState('uploaded'); // State to manage active tab
+
+    const getData = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/video/getMyVideos`);
+            setVideos(res.data.videos);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    const GetLikedVideos = async (search = '') => {
-        axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/video/getLikedVideos`)
-            .then(res => {
-                setVideos(res.data.videos);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    const getLikedVideos = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/video/getLikedVideos`);
+            setLikedVideos(res.data.videos);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     useEffect(() => {
-            if(auth &&  auth.role === "creator"){
-                getData();
-            }    
-            else{
-                GetLikedVideos();
-            }
+        getData();
+        getLikedVideos();
     }, []);
+
     const [profileData, setProfileData] = useState({
         profilePicture: "/profile.png",
         username: "John Doe",
@@ -46,9 +44,13 @@ const Profile = () => {
         followers: 450,
         likes: 1024,
     });
+
+    const handleTabSwitch = (tab) => {
+        setActiveTab(tab);
+    };
+
     return (
         <div className="p-2 lg:p-8 min-h-[90vh] bg-white">
-
             <div className="flex flex-col items-center mb-8">
                 <div className="relative">
                     <img
@@ -57,53 +59,31 @@ const Profile = () => {
                         className="w-24 h-24 rounded-full shadow-lg object-cover"
                     />
                 </div>
-                <h1 className="text-xl font-bold text-gray-800 mt-4">
-                    {auth.name}
-                </h1>
+                <h1 className="text-xl font-bold text-gray-800 mt-4">{auth.name}</h1>
                 <p className="text-gray-600">{auth.email}</p>
-                {
-                    auth.role === "creator" && (
-                        <div className="flex items-center justify-center space-x-4 mt-4">
-                            <div className="text-center rounded-lg border border-gray-100 px-2 py-1 ">
-                                <h2 className="text-xl font-semibold text-gray-800">{profileData.following}</h2>
-                                <p className="text-sm text-gray-500">Following</p>
-                            </div>
-                            <div className="text-center rounded-lg border border-gray-100 px-2 py-1">
-                                <h2 className="text-xl font-semibold text-gray-800">{profileData.followers}</h2>
-                                <p className="text-sm text-gray-500">Followers</p>
-                            </div>
-                            <div className="text-center rounded-lg border border-gray-100 px-2 py-1">
-                                <h2 className="text-xl font-semibold text-gray-800">{profileData.likes}</h2>
-                                <p className="text-sm text-gray-500">Likes</p>
-                            </div>
-                        </div>
-                    )
-                }
-
-                <div className="flex flex-col items-center w-full">
-                    <h2 className="text-xl shadow-sm py-1 shadow-gray-200 font-semibold mt-4 text-center w-1/12">
-                        Bio
-                    </h2>
-                    <p className="mt-4 w-2/4 text-center text-gray-700">{profileData.bio}</p>
-                </div>
-                <div className="flex justify-center">
-                    {
-                        auth.role === "creator" && (<a href="/upload" className="mt-4 bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-rose-700 transition">
-                            Upload
-                        </a>)
-                    }
+                <div className="mt-4">
+                    <button
+                        onClick={() => handleTabSwitch('uploaded')}
+                        className={`px-4 py-2 rounded-lg font-semibold ${activeTab === 'uploaded' ? 'bg-rose-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    >
+                        Uploaded Videos
+                    </button>
+                    <button
+                        onClick={() => handleTabSwitch('liked')}
+                        className={`px-4 py-2 ml-2 rounded-lg font-semibold ${activeTab === 'liked' ? 'bg-rose-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    >
+                        Liked Videos
+                    </button>
                 </div>
             </div>
             <div>
-                <h2 className="text-xl shadow-sm py-1 shadow-gray-200 font-semibold mb-4 text-center w-full">
-                    {
-                        auth.role === "creator" ? "Videos" : "Liked Videos"
-                    }
-                </h2>
-                {videos.length > 0 ? (
+                <div className="text-xl shadow-sm py-1 shadow-gray-200 font-semibold mb-4 text-center w-full">
+                    {activeTab === 'uploaded' ? 'Uploaded Videos' : 'Liked Videos'}
+                </div>
+                {(activeTab === 'uploaded' ? videos : likedVideos).length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-2">
-                        {videos.map((video) => (
-                            <div key={video.id} className="">
+                        {(activeTab === 'uploaded' ? videos : likedVideos).map((video) => (
+                            <div key={video.id}>
                                 <video
                                     src={video.url}
                                     controls

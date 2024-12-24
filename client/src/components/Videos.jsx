@@ -127,7 +127,7 @@ export default function Videos({ videos, refetch }) {
 
     return (
         <div
-            className="flex items-center justify-center h-full lg:min-h-screen lg:bg-transparent bg-black"
+            className="flex items-center justify-center h-full lg:min-h-screen lg:bg-transparent w-full bg-black"
             onWheel={handleWheel}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}

@@ -35,30 +35,30 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 
 
 
-        // const containerClient = blobServiceClient.getContainerClient(containerName);
-        // const blobName = new Date().getTime() + '-' + req.file.originalname;
-        // const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blobName = new Date().getTime() + '-' + req.file.originalname;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-        // await blockBlobClient.uploadFile(req.file.path, {
-        //     blobHTTPHeaders: { blobContentType: req.file.mimetype }
-        // });
-        // const sasPermissions = BlobSASPermissions.parse('r');
-        // const expiresOn = new Date();
-        // expiresOn.setFullYear(expiresOn.getFullYear() + 1);
-        // const sasOptions = {
-        //     containerName,
-        //     blobName,
-        //     permissions: sasPermissions.toString(),
-        //     startsOn: new Date(),
-        //     expiresOn,
-        // };
+        await blockBlobClient.uploadFile(req.file.path, {
+            blobHTTPHeaders: { blobContentType: req.file.mimetype }
+        });
+        const sasPermissions = BlobSASPermissions.parse('r');
+        const expiresOn = new Date();
+        expiresOn.setFullYear(expiresOn.getFullYear() + 1);
+        const sasOptions = {
+            containerName,
+            blobName,
+            permissions: sasPermissions.toString(),
+            startsOn: new Date(),
+            expiresOn,
+        };
 
-        // const sasToken = generateBlobSASQueryParameters(sasOptions, sharedKeyCredential).toString();
-        // const blobUrlWithSAS = `${blockBlobClient.url}?${sasToken}`;
+        const sasToken = generateBlobSASQueryParameters(sasOptions, sharedKeyCredential).toString();
+        const blobUrlWithSAS = `${blockBlobClient.url}?${sasToken}`;
 
-        // fs.unlink(req.file.path, err => {
-        //     if (err) console.error('Error deleting file:', err);
-        // });
+        fs.unlink(req.file.path, err => {
+            if (err) console.error('Error deleting file:', err);
+        });
 
 
         const video = await videoModel.create({
@@ -66,7 +66,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
             title,
             location,
             hashtags,
-            url: "blobUrlWithSAS"
+            url: blobUrlWithSAS
         })
         res.status(200).json({
             status: "Success",
