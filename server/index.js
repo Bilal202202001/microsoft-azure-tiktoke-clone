@@ -9,11 +9,10 @@ import videoRoutes from './routes/video.routes.js'
 dotenv.config();
 
 const app = express();
-// mongoose.connect(process.env.MONGODB_URL);
-mongoose.connect('mongodb+srv://muhammadbilal94390:bilalkhan94390@cluster0.ibfi1yh.mongodb.net/vidvibe?retryWrites=true&w=majority&appName=Cluster0');
+mongoose.connect(process.env.MONGODB_URL);
 app.use(express.json())
 app.use(cors({
-  origin: ['https://solestyle.vercel.app', 'http://localhost:5173'],
+  origin: process.env.FRONTEND_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true
 }));
@@ -24,12 +23,11 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRouter);
 app.use('/video', videoRoutes)
+
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-
-
-
 app.listen(3001, () => {
   console.log("Server is Running")
 })
