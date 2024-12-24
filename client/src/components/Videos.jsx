@@ -1,20 +1,35 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaHeart, FaCommentDots, FaVolumeMute, FaVolumeUp, FaPlay, FaPause } from "react-icons/fa";
-import { CiCirclePlus } from "react-icons/ci";
 import { IoLocationSharp } from "react-icons/io5";
-
-export default function Videos({ videos }) {
+import { BsSendFill } from "react-icons/bs";
+import { FaCircleUser } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import axios from "axios";
+axios.defaults.withCredentials = true;
+export default function Videos({ videos, refetch }) {
+    const auth = useSelector((state) => state.auth);
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
     const [isMuted, setIsMuted] = useState(true);
     const [isPaused, setIsPaused] = useState(false);
     const [showIcon, setShowIcon] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newComment, setNewComment] = useState("");
     const videoRef = useRef(null);
 
-    // Touch tracking
     const touchStartY = useRef(0);
     const touchEndY = useRef(0);
+    useEffect(() => {
+        if (videos && videos.likes) {
+            const hasLiked = videos.likes.some(
+                (like) => like.userId === auth.id
+            );
+            setLiked(hasLiked);
+        }
+    }, [videos, auth.id]);
 
     const handleScroll = (deltaY) => {
+        if (isModalOpen) return;
+
         if (deltaY > 0) {
             setCurrentVideoIndex((prev) =>
                 prev < videos.length - 1 ? prev + 1 : prev
@@ -28,6 +43,7 @@ export default function Videos({ videos }) {
         handleScroll(e.deltaY);
     };
 
+
     const handleTouchStart = (e) => {
         touchStartY.current = e.touches[0].clientY;
     };
@@ -36,10 +52,12 @@ export default function Videos({ videos }) {
         touchEndY.current = e.touches[0].clientY;
     };
 
+
     const handleTouchEnd = () => {
+        if (isModalOpen) return;
+
         const deltaY = touchStartY.current - touchEndY.current;
         if (Math.abs(deltaY) > 50) {
-            // Threshold to avoid accidental scrolls
             handleScroll(deltaY);
         }
     };
@@ -70,6 +88,47 @@ export default function Videos({ videos }) {
             }
         }
     };
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+
+    const handleAddComment = async () => {
+        if (newComment.trim() !== "") {
+            try {
+                const res = await axios.post(
+                    `${import.meta.env.VITE_APP_BACKEND_URL}/video/addComment`,
+                    {
+                        videoId: currentVideo._id,
+                        comment: newComment,
+                    }
+                )
+                console.log(res);
+                refetch();
+            } catch (error) {
+                console.log(error);
+            }
+            setNewComment("");
+        }
+    };
+
+    const handleLike = async () => {
+        try {
+            const res = await axios.post(
+                `${import.meta.env.VITE_APP_BACKEND_URL}/video/likeVideo`,
+                {
+                    videoId: currentVideo._id,
+                }
+            )
+            console.log(res);
+            refetch();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         if (videoRef.current) {
@@ -83,7 +142,20 @@ export default function Videos({ videos }) {
                 videoRef.current.removeEventListener("pause", () => setIsPaused(true));
             }
         };
-    }, []);
+
+    }, [videos, auth]);
+
+    const [liked, setLiked] = useState(false);
+
+    useEffect(() => {
+        if (videos && videos[currentVideoIndex]?.likes) {
+            const hasLiked = videos[currentVideoIndex].likes.some(
+                (like) => like.userId === auth.id
+            );
+            setLiked(hasLiked);
+        }
+    }, [videos, currentVideoIndex, auth.id]);
+
 
     const currentVideo = videos[currentVideoIndex];
 
@@ -98,50 +170,96 @@ export default function Videos({ videos }) {
             <div className="relative w-full max-w-md aspect-video h-[95vh] bg-gray-800 rounded-lg overflow-hidden">
                 <video
                     ref={videoRef}
-                    src={currentVideo.src}
+                    src={currentVideo.url}
                     className="w-full h-full object-cover"
                     autoPlay
                     loop
                     muted={isMuted}
                     onClick={togglePlayPause}
                 ></video>
-
-                {/* Play/Pause Icons */}
                 {showIcon && (
                     <div className="absolute inset-0 flex items-center justify-center">
                         {showIcon}
                     </div>
                 )}
 
+                {/* Mute Button */}
                 <button
                     onClick={toggleMute}
                     className="absolute top-4 left-4 bg-gray-900 bg-opacity-75 text-white rounded-full p-2 hover:bg-opacity-100 transition"
                 >
                     {isMuted ? <FaVolumeMute size={24} /> : <FaVolumeUp size={24} />}
                 </button>
+                <div className="absolute right-4 bottom-8 space-y-4 text-white p-3 bg-white bg-opacity-10 rounded-lg">
+                    <div className="flex flex-col items-center">
+                        <button className="flex items-center justify-center w-12 h-12 bg-gray-900 rounded-full" onClick={handleLike}>
+                            <FaHeart className={`${liked ? "text-rose-600" : "text-white"}  text-xl`} />
 
-                <div className="absolute right-4 bottom-8 space-y-4 text-white">
-                    <button className="flex items-center justify-center w-12 h-12 bg-gray-900 bg-opacity-75 rounded-full hover:bg-opacity-100 transition">
-                        <CiCirclePlus className="text-white text-xl " size={40} />
-                    </button>
-                    <button className="flex items-center justify-center w-12 h-12 bg-gray-900 bg-opacity-75 rounded-full hover:bg-opacity-100 transition">
-                        <FaHeart className="text-rose-600 text-xl" />
-                    </button>
-                    <button className="flex items-center justify-center w-12 h-12 bg-gray-900 bg-opacity-75 rounded-full hover:bg-opacity-100 transition">
-                        <FaCommentDots className="text-white text-xl" />
-                    </button>
+                        </button>
+                        {currentVideo.likes.length}
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <button onClick={openModal} className="flex items-center justify-center w-12 h-12 bg-gray-900 rounded-full">
+                            <FaCommentDots />
+                        </button>
+                        {currentVideo.comments.length}
+                    </div>
                 </div>
-
                 <div className="absolute left-4 bottom-8 text-white space-y-2">
                     <p className="text-sm text-gray-400 flex items-center justify-start bg-white bg-opacity-10 p-2 rounded-lg">
                         <IoLocationSharp className="mr-2 text-green-500 h-6 w-6" />{" "}
                         {currentVideo.location}
                     </p>
-                    <p className="font-semibold">{currentVideo.account}</p>
-                    <p className="text-sm">{currentVideo.description}</p>
+                    <p className="font-semibold">{currentVideo.userId.name}</p>
+                    <p className="text-sm">{currentVideo.title}</p>
                     <p className="text-sm text-gray-300">{currentVideo.hashtags}</p>
                 </div>
+                {isModalOpen && (
+                    <div className="absolute inset-0 bg-black bg-opacity-75 flex items-end justify-center z-50 p-2">
+                        <button onClick={closeModal} className="absolute top-4 right-4 text-white">✖</button>
+                        <div className="bg-white px-6 pb-6 rounded-lg w-full max-w-md">
+                            <h2 className="text-xl font-semibold py-2 my-2 text-center" >Comments</h2>
+                            <div className="h-[50vh] overflow-y-auto">
+                                {
+                                    currentVideo.comments.length > 0 ?
+                                        currentVideo.comments.map((comment, index) => (
+                                            <div index={index} className="mb-2 border border-gray-300 p-2 rounded-lg">
+                                                <p className="text-black font-semibold text-sm flex items-center">  <FaCircleUser size={20} className="mr-2" /> {comment.userId.name}</p>
+                                                <p className="text-gray-600 pl-6">{comment.comment}</p>
+                                            </div>
+                                        )) :
+                                        <h1 className="text-xl font-semibold text-gray-400 text-center">No Comments Found</h1>
+                                }
+                            </div>
+                            <div className="flex items-center w-full">
+                                <input
+                                    type="text"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="Add a comment..."
+                                    className="w-full p-2 border border-gray-300 rounded-lg"
+                                />
+                                <button onClick={handleAddComment} className="ml-2 text-rose-600"><BsSendFill size={20} /></button>
+                            </div>
+
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

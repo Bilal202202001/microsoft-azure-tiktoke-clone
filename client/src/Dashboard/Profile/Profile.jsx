@@ -1,8 +1,28 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 const Profile = () => {
+
+    const auth = useSelector((state) => state.auth);
+
+
+    const [videos, setVideos] = useState([]);
+    const getData = async (search = '') => {
+        axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/video/getMyVideos`)
+            .then(res => {
+                setVideos(res.data.videos);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
     const [profileData, setProfileData] = useState({
-        profilePicture: "/logo1.png", // Default profile picture
+        profilePicture: "/logo1.png",
         username: "John Doe",
         email: "johndoe@example.com",
         bio: "Avid traveler and content creator.",
@@ -52,10 +72,10 @@ const Profile = () => {
                 </div>
 
                 <h1 className="text-xl font-bold text-gray-800 mt-4">
-                    {profileData.username}
+                    {auth.name}
                 </h1>
                 {/* Email */}
-                <p className="text-gray-600">{profileData.email}</p>
+                <p className="text-gray-600">{auth.email}</p>
                 {/* Bio */}
 
                 {/* Stats */}
@@ -75,23 +95,25 @@ const Profile = () => {
                 </div>
 
                 <p className="mt-4 w-2/4 text-center text-gray-700">{profileData.bio}</p>
-                {/* Edit Profile Button */}
-                <button className="mt-4 bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-rose-700 transition">
+               <div className="flex justify-center">
+               <a href="#" className="mt-4 mr-2 bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-rose-700 transition">
                     Edit Profile
-                </button>
+                </a>
+                <a href="/upload" className="mt-4 bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-rose-700 transition">
+                    Upload
+                </a>
+               </div>
             </div>
-
-            {/* Uploaded Videos Section */}
             <div>
                 <h2 className="text-xl shadow-sm py-1 shadow-gray-200 font-semibold mb-4 text-center w-full">
                     Videos
                 </h2>
-                {uploadedVideos.length > 0 ? (
+                {videos.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-2">
-                        {uploadedVideos.map((video) => (
+                        {videos.map((video) => (
                             <div key={video.id} className="">
                                 <video
-                                    src={video.src}
+                                    src={video.url}
                                     controls
                                     className="w-full h-80 rounded-lg object-cover"
                                 ></video>

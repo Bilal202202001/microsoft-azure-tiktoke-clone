@@ -11,26 +11,25 @@ const router = express.Router();
 
 router.post('/register', upload.none(), async (req, res) => {
     try {
+        const response = await AuthController.register(req.body);
 
-        const existingUser = await userModel.findOne({ email: req.body.email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already exists' });
+        if (!response.success) {
+            return res.status(400).json({ message: response.message });
         }
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const newUser = await userModel.create({
-            name: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
+
+        res.cookie('token', response.token);
+        return res.json({
+            Status: 'Success',
+            name: response.user.name,
+            email: response.user.email,
+            _id: response.user._id,
+            role: response.user.role,
+            message: response.message,
         });
-        const jwtToken = jwt.sign({ id: newUser._id, email: newUser.email, role: newUser.role, name: newUser.name }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        res.cookie('token', jwtToken);
-        return res.json({ Status: "Success", name: newUser.name, email: newUser.email, _id: newUser._id, role: newUser.role, message: "User Registered Successfully" });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ message: 'Registration failed', error: err.message });
     }
 });
-
-
 
 router.post('/login', upload.none(), async (req, res) => {
     try {
@@ -58,27 +57,6 @@ router.post('/login', upload.none(), async (req, res) => {
 router.post('/logout', (req, res) => {
     res.clearCookie('token').json('Logged out successfully');
 });
-
-const verifyUser = (req, res, next) => {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.json("Token Not Found");
-    }
-    else {
-        jwt.verify(token, 'jwt-secret-key', (err, decoded) => {
-            if (err) {
-                return res.json("Error in Token Verification");
-            }
-            else {
-                req.email = decoded.email;
-                req._id = decoded.id;
-                req.role = decoded.role
-                req.name = decoded.name
-                next();
-            }
-        });
-    }
-}
 
 router.get('/getUser', async (req, res) => {
     const token = req.cookies.token;

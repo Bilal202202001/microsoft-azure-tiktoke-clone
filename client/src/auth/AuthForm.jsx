@@ -81,7 +81,9 @@ export default function AuthForm() {
 
 
             if (password !== confirmPassword) {
-                toast.error("Passwords do not match", { type: 'error' });
+                toast.error(`Passwords didn't match`, {
+                    style: { backgroundColor: '#e11d48', color: 'white' },
+                });
                 return;
             }
             axios.post(`${import.meta.env.VITE_APP_BACKEND_URL}/auth/register`, formData)
@@ -89,11 +91,15 @@ export default function AuthForm() {
                     console.log(res);
                     const data = res.data;
                     dispatch(setAuthData({ isLogin: true, _id: data._id, role: data.role, name: data.name, email: data.email }));
-                    toast.success(data.message, { type: 'success' })
-                    navigate('/jira/dashboard');
+                    toast.success(data.message, {
+                        style: { backgroundColor: 'black', color: 'white' },
+                    });
+                    navigate('/');
                 })
                 .catch(err => {
-                    toast.error(err.response.data.message, { type: 'error' })
+                    toast.error(err.response.data.message, {
+                        style: { backgroundColor: '#e11d48', color: 'white' },
+                    });
                 }
                 );
         }
@@ -103,17 +109,19 @@ export default function AuthForm() {
             axios.post(`${import.meta.env.VITE_APP_BACKEND_URL}/auth/login`, { email, password })
                 .then(res => {
                     const data = res.data;
-                    console.log(data, "data");
-
                     dispatch(setAuthData({ isLogin: true, _id: data._id, role: data.role, name: data.name, email: data.email }));
 
-                    toast.success(data.message, { type: 'success' })
-                    navigate('/jira/haab');
+                    toast.success(data.message, {
+                        style: { backgroundColor: 'black', color: 'white' },
+                    });
+                    navigate('/');
 
                 }).catch(
                     err => {
                         console.log(err.response.data.message, "error")
-                        toast.error(err.response.data.message, { type: 'error' })
+                        toast.error(err.response.data.message, {
+                            style: { backgroundColor: '#e11d48', color: 'white' },
+                        });
                     }
                 );
         }

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+axios.defaults.withCredentials = true;
 const Upload = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         video: null,
         title: '',
@@ -31,13 +35,25 @@ const Upload = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form Data:', formData);
+        let formData = new FormData(event.target);
+        console.log(formData);
+        axios.post(`${import.meta.env.VITE_APP_BACKEND_URL}/video/upload`, formData)
+            .then(res => {
+                toast.success(res.data.message, {
+                    style: { backgroundColor: 'black', color: 'white' },
+                });
+                navigate('/');
+            })
+            .catch(err => {
+                toast.error(err.response.data.message, {
+                    style: { backgroundColor: '#e11d48', color: 'white' },
+                });
+            });
     };
 
     return (
         <div className="p-4 mb-20 lg:p-8 min-h-[90vh] bg-white flex flex-col">
             <h1 className="text-3xl font-bold text-gray-800 mb-4 w-full text-center lg:text-start shadow-sm shadow-b-gray-300 py-2 mb-4">Upload Video</h1>
-            {/* Form Section */}
             <div className='w-full h-full lg:h-[70vh] flex flex-col lg:flex-row justify-center items-center space-y-4 lg:space-x-4 ' >
                 <div className="w-full lg:w-1/2  flex items-center justify-center">
                     {videoPreview ? (
@@ -56,6 +72,7 @@ const Upload = () => {
                         <div className='w-full'>
                             <label className="block font-semibold text-gray-700 mb-2">Upload Video (MP4)</label>
                             <input
+                                name='file'
                                 type="file"
                                 accept="video/mp4"
                                 onChange={handleVideoChange}
@@ -63,7 +80,7 @@ const Upload = () => {
                             />
                         </div>
 
-                        <div className='w-full'> 
+                        <div className='w-full'>
                             <label className="block font-semibold text-gray-700 mb-2">Title</label>
                             <input
                                 type="text"
@@ -110,6 +127,11 @@ const Upload = () => {
                         </button>
                     </form>
                 </div>
+                {/* <div className='w-full bg-black h-screen'>
+
+                    <video src="https://integrationvideotask2.blob.core.windows.net/videos/1734936425608-TEST_LAST.mp4?sv=2025-01-05&st=2024-12-23T06%3A47%3A25Z&se=2024-12-23T07%3A47%3A25Z&sr=b&sp=r&sig=5ouK3vkUza5cib1Ux7j%2FGcgQ4qF7f67ovVR0LGX2Cxw%3D" autoPlay loop muted alt="Background Video" />
+
+                </div> */}
             </div>
             {/* Video Preview Section */}
 

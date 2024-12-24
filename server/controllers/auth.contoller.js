@@ -25,14 +25,40 @@ const AuthController = {
             return { error: 'Internal server error' };
         }
     },
-    register: async () => {
+    register: async (body) => {
+        const { username, email, password } = body;
+
+        try {
+            const existingUser = await userModel.findOne({ email });
+            if (existingUser) {
+                return { success: false, message: 'Email already exists' };
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = await userModel.create({
+                name: username,
+                email: email,
+                password: hashedPassword,
+            });
+
+            const token = createJWT(newUser);
+            return {
+                success: true,
+                user: newUser.toObject(),
+                token,
+                message: 'User Registered Successfully',
+            };
+        } catch (err) {
+            console.error(err);
+            return { success: false, message: 'Registration failed', error: err.message };
+        }
     },
     getUser: async (token) => {
         try {
             const userId = await verifyJWT(token)
             if (!userId)
                 return false
-            const user = await userModel.findOne({ _id: userId.id })   
+            const user = await userModel.findOne({ _id: userId.id })
             return { success: true, user: user };
         } catch (err) {
             console.error(err)
