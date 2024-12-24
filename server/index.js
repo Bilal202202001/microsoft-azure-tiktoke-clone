@@ -9,7 +9,7 @@ import videoRoutes from './routes/video.routes.js'
 dotenv.config();
 
 const app = express();
-// mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(process.env.MONGODB_URL);
 app.use(express.json())
 app.use(cors({
   origin: ['https://solestyle.vercel.app', 'http://localhost:5173'],
