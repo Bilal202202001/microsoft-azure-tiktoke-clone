@@ -9,7 +9,7 @@ import videoRoutes from './routes/video.routes.js'
 dotenv.config();
 
 const app = express();
-mongoose.connect(process.env.MONGODB_URL);
+// mongoose.connect(process.env.MONGODB_URL);
 app.use(express.json())
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -21,8 +21,8 @@ app.use(cookieParser())
 app.use(bodyParser.json());
 
 
-app.use('/auth', authRouter);
-app.use('/video', videoRoutes)
+// app.use('/auth', authRouter);
+// app.use('/video', videoRoutes)
 
 
 app.get('/', (req, res) => {
