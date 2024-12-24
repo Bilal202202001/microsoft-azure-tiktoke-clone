@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +51,23 @@ const Upload = () => {
             });
     };
 
+    useEffect(() => {
+        const verifyLogin = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/auth/getUser`, { withCredentials: true });
+                const data = res.data.user;
+                if (data.role !== 'creator') {
+                    navigate('/');
+                }
+
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+        verifyLogin()
+    }, [])
+
     return (
         <div className="p-4 mb-20 lg:p-8 min-h-[90vh] bg-white flex flex-col">
             <h1 className="text-3xl font-bold text-gray-800 mb-4 w-full text-center lg:text-start shadow-sm shadow-b-gray-300 py-2 mb-4">Upload Video</h1>
@@ -77,6 +94,7 @@ const Upload = () => {
                                 accept="video/mp4"
                                 onChange={handleVideoChange}
                                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                required
                             />
                         </div>
 
@@ -115,10 +133,9 @@ const Upload = () => {
                                 onChange={handleInputChange}
                                 placeholder="#hashtag1 #hashtag2"
                                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                required
                             />
                         </div>
-
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             className="bg-red-600 text-white py-2 w-full rounded-lg font-semibold hover:bg-red-500 transition"
@@ -127,13 +144,7 @@ const Upload = () => {
                         </button>
                     </form>
                 </div>
-                {/* <div className='w-full bg-black h-screen'>
-
-                    <video src="https://integrationvideotask2.blob.core.windows.net/videos/1734936425608-TEST_LAST.mp4?sv=2025-01-05&st=2024-12-23T06%3A47%3A25Z&se=2024-12-23T07%3A47%3A25Z&sr=b&sp=r&sig=5ouK3vkUza5cib1Ux7j%2FGcgQ4qF7f67ovVR0LGX2Cxw%3D" autoPlay loop muted alt="Background Video" />
-
-                </div> */}
             </div>
-            {/* Video Preview Section */}
 
         </div>
     );

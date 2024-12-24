@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { FaSquarePlus } from "react-icons/fa6";
 import { RiHome2Fill } from "react-icons/ri";
-import { RiUserFollowFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
-import { RiLoginBoxFill } from "react-icons/ri";
-import { BsCameraVideoFill } from "react-icons/bs";
 import { IoLogOut } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthData } from '../store/slices/auth';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 export default function DashboardLayout() {
     const pathname = window.location.pathname;
     const dispatch = useDispatch();
     const isActive = (link) => pathname === link || pathname.startsWith(`${link}/`);
     const auth = useSelector((state) => state.auth);
-    console.log(auth, "auth");
+    const navigator = useNavigate();
 
     useEffect(() => {
         const verifyLogin = async () => {
@@ -35,6 +33,7 @@ export default function DashboardLayout() {
         try {
             const res = await axios.post(`${import.meta.env.VITE_APP_BACKEND_URL}/auth/logout`, {}, { withCredentials: true });
             dispatch(setAuthData({ isLogin: false, role: '', name: '', email: '', _id: '' }));
+            navigator('/');
         } catch (error) {
             dispatch(setAuthData({ isLogin: false, role: '', name: '', email: '', _id: '' }));
         }
@@ -95,7 +94,7 @@ export default function DashboardLayout() {
                             Terms & Policies
                         </a>
                         <h2 className='cursor-pointer'>
-                            © 2024 VidVibe
+                            © {new Date().getFullYear()} VidVibe
                         </h2>
                     </div>
                 </div>

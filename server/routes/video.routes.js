@@ -90,7 +90,6 @@ router.get('/getVideos', async (req, res) => {
 
         if (searchQuery) {
             filter.title = { $regex: searchQuery, $options: 'i' };
-            console.log("Filter being applied:", filter);
         }
 
         const videos = await videoModel.find(filter).populate('userId').populate('comments.userId').sort({ timestamp: -1 });
@@ -123,8 +122,27 @@ router.get('/getMyVideos', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+router.get('/getLikedVideos', async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        if (!token) {
+            return res.status(401).json({ message: "Invalid Login" });
+        }
 
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const videos = await videoModel.find(
+            { likes: { $elemMatch: { userId: user.id } } }
+        ).sort({ timestamp: -1 });
 
+        res.status(200).json({ videos });
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ message: err.message });
+    }
+});
 router.post('/addComment', async (req, res) => {
     try {
         const token = req.cookies.token;
@@ -148,7 +166,6 @@ router.post('/addComment', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
-
 router.post('/likeVideo', async (req, res) => {
     try {
         const token = req.cookies.token;
@@ -156,13 +173,10 @@ router.post('/likeVideo', async (req, res) => {
             return res.status(401).json({ message: "To like the video,Please Login" });
         }
         const user = jwt.verify(token, process.env.JWT_SECRET);
-        const userData = await userModel.findById(user.id);
-        if (!userData) {
+        if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const { videoId } = req.body;
-        console.log(videoId);
-
         const video = await videoModel.findById(videoId);
         if (!video) {
             return res.status(404).json({ message: "Video not found" });
@@ -172,7 +186,7 @@ router.post('/likeVideo', async (req, res) => {
         if (existingLike) {
             video.likes.pull(existingLike);
         } else {
-            video.likes.push({ userId: user.id});
+            video.likes.push({ userId: user.id });
         }
 
 
