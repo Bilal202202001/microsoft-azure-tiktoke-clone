@@ -23,6 +23,9 @@ app.use(bodyParser.json());
 app.use('/auth', authRouter);
 app.use('/video', videoRoutes)
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
 const PORT = 5001;
 app.listen(PORT, () => {
