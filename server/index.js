@@ -9,7 +9,8 @@ import videoRoutes from './routes/video.routes.js'
 dotenv.config();
 
 const app = express();
-mongoose.connect(process.env.MONGODB_URL);
+// mongoose.connect(process.env.MONGODB_URL);
+// mongoose.connect('mongodb+srv://muhammadbilal94390:bilalkhan94390@cluster0.ibfi1yh.mongodb.net/testEcom?retryWrites=true&w=majority&appName=Cluster0');
 app.use(express.json())
 app.use(cors({
   origin: ['https://solestyle.vercel.app', 'http://localhost:5173'],
@@ -21,9 +22,8 @@ app.use(cookieParser())
 app.use(bodyParser.json());
 
 
-// app.use('/auth', authRouter);
-// app.use('/video', videoRoutes)
-// mongoose.connect('mongodb+srv://muhammadbilal94390:bilalkhan94390@cluster0.ibfi1yh.mongodb.net/testEcom?retryWrites=true&w=majority&appName=Cluster0');
+app.use('/auth', authRouter);
+app.use('/video', videoRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
